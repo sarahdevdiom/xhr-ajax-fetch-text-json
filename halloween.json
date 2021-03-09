@@ -1,0 +1,18 @@
+{
+  "array": [
+    1,
+    2,
+    3
+  ],
+  "prénom": "Jean-Michel",
+  "nom": "🔪",
+  "boolean": true,
+  "color": "silver",
+  "null": null,
+  "number": 123,
+  "object": {
+    "a": "ahah",
+    "c": "cécé"
+  },
+  "string": "Hello World"
+}

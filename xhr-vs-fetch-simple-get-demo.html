@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XHR vs Fetch - a simple GET demo</title>
+  <style>pre { font-size: 16px; }</style>
+</head>
+<body>
+
+  <button>xhr</button>
+  <button>fetch + async</button>
+  <button>fetch (sans async)</button>
+  <button>fetch (sans async) du JSON</button>
+  <button>fetch (sans async) du JSON (de Github)</button>
+
+  <pre>press the buttons :)</pre>
+
+  <!-- JAVASCRIPT -->
+  <script>
+
+    "use strict";
+
+    /*
+
+    XHR
+    see https://javascript.info/xmlhttprequest
+
+    */
+
+    let myXHR = function(evt) {
+      let xhr = new XMLHttpRequest(); // nouvel objet xhr
+
+      xhr.addEventListener("error", () => {
+        document.querySelector("pre").innerHTML = "[xhr error] - est-ce que votre URL est correcte ?";
+      });
+
+      xhr.addEventListener("load", () => {
+        document.querySelector("pre").innerHTML = "[xhr finished] - voici la réponse du server distant : " + xhr.response;
+      });
+
+      xhr.open("GET", "https://api.hmz.tf/datetime.php");
+      xhr.send(); // on lance la sauce
+    }
+
+    document.querySelector("button:nth-of-type(1)").addEventListener("click", myXHR);
+
+    /*
+
+    FETCH + async promise
+    see https://javascript.info/fetch
+    and https://javascript.info/async-await
+
+    */
+
+    let myFetch = async function(evt) {
+      try {
+        let response = await fetch("https://api.hmz.tf/datetime.php");
+        if (response.ok) {
+          let text = await response.text();
+          document.querySelector("pre").innerHTML = "[fetch ok] - voici la réponse du server distant : " + text;
+        }
+      } catch (error) {
+        document.querySelector("pre").innerHTML = "[fetch error] - " + error;
+      }
+    }
+
+    document.querySelector("button:nth-of-type(2)").addEventListener("click", myFetch);
+
+    /*
+
+    FETCH (sans async)
+    see https://javascript.info/fetch
+
+    */
+
+    document.querySelector("button:nth-of-type(3)").addEventListener("click", () => {
+      fetch("https://api.hmz.tf/datetime.php")
+      .then(response => response.text())
+      .then(result => document.querySelector("pre").innerHTML = "[fetch ok] - voici la réponse du server distant : " + result)
+      .catch(error => document.querySelector("pre").innerHTML = "[fetch error] - " + error);
+    });
+
+    /*
+
+    FETCH (sans async) du JSON
+    see https://javascript.info/fetch
+
+    */
+
+    document.querySelector("button:nth-of-type(4)").addEventListener("click", () => {
+      fetch("https://cdn.hmz.tf/halloween.json")
+      .then(response => response.json())
+      .then(result => {
+        console.log(result); // debug
+        document.querySelector("pre").innerHTML = `[fetch ok] prénom : <u>${result.prénom}</u>, nom : <u>${result.nom}</u>`;
+      })
+      .catch(error => document.querySelector("pre").innerHTML = "[fetch error] - " + error);
+    });
+
+    /*
+
+    FETCH (sans async) encore du JSON (ce coup là depuis Github)
+    see https://javascript.info/fetch
+
+    */
+
+    document.querySelector("button:nth-of-type(5)").addEventListener("click", () => {
+      fetch("https://api.github.com/users/jrm-omg")
+      .then(response => response.json())
+      .then(result => {
+        console.log(result); // debug
+        document.querySelector("pre").innerHTML = `[fetch ok] login : <u>${result.login}</u>, lien repos : <a href="${result.repos_url}">${result.repos_url}</a><br>avatar :<br><img src="${result.avatar_url}" alt="avatar de l'user">`;
+      })
+      .catch(error => document.querySelector("pre").innerHTML = "[fetch error] - " + error);
+    });
+    
+  </script>
+
+</body>
+</html>
